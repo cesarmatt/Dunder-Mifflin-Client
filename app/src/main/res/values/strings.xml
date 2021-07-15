@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Dunder Mifflin</string>
+
+    <!-- Create Customer resources -->
+    <string name="msg_created_customer">Your customer is now registered at Dunder Mifflin!</string>
+    <string name="msg_error_creating_customer">Something went wrong while creating your customer :(</string>
+
+    <!-- Create Order resources -->
+    <string name="msg_created_order">Your order is now registered at Dunder Mifflin!</string>
+    <string name="msg_error_creating_order">Something went wrong while creating your order :(</string>
+    <string name="msg_error_getting_customers">Something went wrong while fetching your customers :(</string>
+    <string name="msg_error_getting_salesman">Something went wrong while fetching your salesman :(</string>
+    <string name="msg_error_getting_items">Something went wrong while fetching your items :(</string>
+    <string name="action_create">Create</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

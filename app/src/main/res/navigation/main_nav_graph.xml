@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/feedFragment">
+
+    <fragment
+        android:id="@+id/feedFragment"
+        android:name="com.example.dundermifflinapp.ui.feed.FeedFragment"
+        android:label="FeedFragment"
+        tools:layout="@layout/fragment_feed">
+
+        <action
+            android:id="@+id/action_feedFragment_to_createMenuFragment"
+            app:destination="@id/createMenuFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createMenuFragment"
+        android:name="com.example.dundermifflinapp.ui.create.CreateMenuFragment"
+        android:label="CreateMenuFragment"
+        tools:layout="@layout/fragment_create_menu">
+
+        <action
+            android:id="@+id/action_createMenuFragment_to_feedFragment"
+            app:destination="@id/feedFragment" />
+        <action
+            android:id="@+id/action_createMenuFragment_to_createCustomerFragment"
+            app:destination="@id/createCustomerFragment" />
+        <action
+            android:id="@+id/action_createMenuFragment_to_selectSalesmanFragment"
+            app:destination="@id/selectSalesmanFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createCustomerFragment"
+        android:name="com.example.dundermifflinapp.ui.create.customer.CreateCustomerFragment"
+        android:label="CreateCustomerFragment"
+        tools:layout="@layout/fragment_create_customer">
+
+        <action
+            android:id="@+id/action_createCustomerFragment_to_createMenuFragment"
+            app:destination="@id/createMenuFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/selectSalesmanFragment"
+        android:name="com.example.dundermifflinapp.ui.create.order.salesman.SelectSalesmanFragment"
+        android:label="SelectSalesmanFragment"
+        tools:layout="@layout/fragment_select_salesman">
+
+        <action
+            android:id="@+id/action_selectSalesmanFragment_to_createMenuFragment"
+            app:destination="@id/createMenuFragment" />
+        <action
+            android:id="@+id/action_selectSalesmanFragment_to_selectCustomerFragment"
+            app:destination="@id/selectCustomerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/selectCustomerFragment"
+        android:name="com.example.dundermifflinapp.ui.create.order.customers.SelectCustomerFragment"
+        android:label="SelectCustomerFragment"
+        tools:layout="@layout/fragment_select_customer">
+
+        <action
+            android:id="@+id/action_selectCustomerFragment_to_selectSalesmanFragment"
+            app:destination="@id/selectSalesmanFragment" />
+        <argument
+            android:name="salesmanId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_selectCustomerFragment_to_selectItemsFragment"
+            app:destination="@id/selectItemsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/selectItemsFragment"
+        android:name="com.example.dundermifflinapp.ui.create.order.items.SelectItemsFragment"
+        android:label="SelectItemsFragment"
+        tools:layout="@layout/fragment_select_items">
+
+        <argument
+            android:name="customerId"
+            app:argType="string" />
+        <argument android:name="salesmanId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_selectItemsFragment_to_selectCustomerFragment"
+            app:destination="@id/selectCustomerFragment" />
+        <action
+            android:id="@+id/action_selectItemsFragment_to_feedFragment"
+            app:destination="@id/feedFragment" />
+    </fragment>
+
+</navigation>

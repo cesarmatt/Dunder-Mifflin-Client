@@ -1,5 +1,6 @@
 package com.example.dundermifflinapp.ui.create
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
@@ -14,7 +15,8 @@ fun CreateMenuItem(menuAction: MenuAction) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp),
+            .height(100.dp)
+            .clickable { menuAction.action?.invoke() },
         verticalArrangement = Arrangement.Center
     ) {
         Text(

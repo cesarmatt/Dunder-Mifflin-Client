@@ -6,12 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.fragment.findNavController
 import com.example.dundermifflinapp.R
 import com.example.dundermifflinapp.ui.components.appbar.NavigationAppBar
@@ -89,6 +92,10 @@ fun CreateMenuContent(
         Column {
             actions.forEach { action ->
                 CreateMenuItem(menuAction = action)
+                Divider(
+                    color = Color.Gray,
+                    thickness = 1.dp
+                )
             }
         }
     }

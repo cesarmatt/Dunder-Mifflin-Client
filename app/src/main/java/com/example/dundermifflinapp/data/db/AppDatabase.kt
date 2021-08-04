@@ -1,11 +1,9 @@
 package com.example.dundermifflinapp.data.db
 
 import android.content.Context
-import androidx.databinding.adapters.Converters
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 import com.example.dundermifflinapp.data.models.Customer
 import com.example.dundermifflinapp.data.models.OrderItem
 import com.example.dundermifflinapp.data.models.Salesman

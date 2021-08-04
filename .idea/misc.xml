@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../layout/compose-model-1627993298444.xml" value="0.33" />
+        <entry key="../../../../layout/compose-model-1627996801972.xml" value="0.5" />
+        <entry key="../../../../layout/compose-model-1628025691458.xml" value="0.5" />
+        <entry key="../../../../layout/compose-model-1628028254160.xml" value="0.5305555555555556" />
+        <entry key="../../../../layout/compose-model-1628030914443.xml" value="0.6574074074074074" />
+        <entry key="../../../../layout/compose-model-1628032139048.xml" value="0.4358108108108108" />
+        <entry key="../../../../layout/compose-model-1628032332741.xml" value="0.5342592592592592" />
+        <entry key="../../../../layout/compose-model-1628035907702.xml" value="0.4358108108108108" />
+        <entry key="../../../../layout/compose-model-1628036058087.xml" value="0.22" />
+        <entry key="../../../../layout/compose-model-1628036184202.xml" value="0.5" />
+        <entry key="../../../../layout/compose-model-1628043334028.xml" value="0.5" />
+        <entry key="../../../../layout/compose-model-1628044023755.xml" value="0.43665540540540543" />
+        <entry key="../../../../layout/compose-model-1628044131186.xml" value="0.5314814814814814" />
+        <entry key="../../../../layout/compose-model-1628045055922.xml" value="0.5314814814814814" />
+        <entry key="../../../../layout/compose-model-1628045193309.xml" value="0.5314814814814814" />
+        <entry key="../../../../layout/compose-model-1628045196108.xml" value="0.26646959459459457" />
+        <entry key="../../../../layout/compose-model-1628045729978.xml" value="0.4358108108108108" />
+        <entry key="../../../../layout/compose-model-1628045787741.xml" value="0.5314814814814814" />
+        <entry key="../../../../layout/compose-model-1628045812994.xml" value="0.4358108108108108" />
+        <entry key="app/src/main/res/layout/fragment_create_menu.xml" value="0.2489868287740628" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

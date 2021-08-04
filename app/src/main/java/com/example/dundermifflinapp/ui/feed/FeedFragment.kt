@@ -2,57 +2,40 @@ package com.example.dundermifflinapp.ui.feed
 
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.example.dundermifflinapp.R
+import com.example.dundermifflinapp.data.models.OrderView
+import com.example.dundermifflinapp.ui.feed.components.OrderItem
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.example.dundermifflinapp.ui.components.appbar.AppBar as AppBar
 
 class FeedFragment : Fragment() {
 
     private val viewModel: FeedViewModel by viewModel()
 
-    private var toolbar: Toolbar? = null
-    private var orderList: RecyclerView? = null
-
-    private val adapter = OrderAdapter()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupViews()
-        setupBindings()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_feed, container, false)
-
-        toolbar = view?.rootView?.findViewById(R.id.toolbar)
-        orderList = view?.findViewById(R.id.orderList)
-
-        return view
-    }
-
-    private fun setupViews() {
-        with (activity as? AppCompatActivity) {
-            this?.setSupportActionBar(toolbar)
-            this?.supportActionBar?.setHomeButtonEnabled(false)
-            this?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
-            toolbar?.title = "Dunder Mifflin"
-        }
-
-        orderList?.let {
-            it.adapter = adapter
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                FeedScreen(viewModel) {
+                    goToCreateMenu()
+                }
+            }
         }
     }
 
@@ -60,21 +43,41 @@ class FeedFragment : Fragment() {
         findNavController().navigate(R.id.action_feedFragment_to_createMenuFragment)
     }
 
-    private fun setupBindings() {
-        viewModel.orderViews.observe(viewLifecycleOwner) {
-            adapter.setOrders(it)
-        }
-    }
+}
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_feed, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
+@Composable
+fun FeedScreen(
+    feedViewModel: FeedViewModel = viewModel(),
+    onCreateButtonClicked: () -> Unit
+) {
+    val orders: List<OrderView> by feedViewModel.orderViews.observeAsState(listOf())
+    FeedContent(
+        ordersList = orders,
+        onCreateButtonClicked = onCreateButtonClicked
+    )
+}
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.create) {
-            goToCreateMenu()
+@Composable
+private fun FeedContent(ordersList: List<OrderView>, onCreateButtonClicked: () -> Unit) {
+    Scaffold(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(),
+        topBar = {
+            AppBar(
+                title = "Dunder Mifflin",
+                onActionClick = { onCreateButtonClicked() }
+            )
+        },
+    ) {
+
+        LazyColumn(
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            items(ordersList) {
+                OrderItem(order = it)
+            }
         }
-        return super.onOptionsItemSelected(item)
     }
 }
+

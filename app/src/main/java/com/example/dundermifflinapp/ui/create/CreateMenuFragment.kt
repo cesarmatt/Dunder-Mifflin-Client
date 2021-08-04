@@ -5,55 +5,53 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.fragment.findNavController
 import com.example.dundermifflinapp.R
+import com.example.dundermifflinapp.ui.components.appbar.NavigationAppBar
+import com.example.dundermifflinapp.ui.components.appbar.NavigationAppBarWithAction
+import com.example.dundermifflinapp.ui.create.MenuAction.Companion.ACTION_CREATE_CUSTOMER
+import com.example.dundermifflinapp.ui.create.MenuAction.Companion.ACTION_CREATE_ORDER
 
 class CreateMenuFragment : Fragment() {
 
-    private var toolbar: Toolbar? = null
-    private var closeButton: ImageButton? = null
-    private var createOrderButton: LinearLayout? = null
-    private var registerCustomerButton: LinearLayout? = null
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupViews()
-    }
-
+    @ExperimentalMaterialApi
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_create_menu, container, false)
-
-        toolbar = view?.rootView?.findViewById(R.id.toolbar)
-        createOrderButton = view?.findViewById(R.id.createOrderButton)
-        registerCustomerButton = view?.findViewById(R.id.registerCustomerButton)
-
-        return view
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                CreateMenuContent(
+                    actions = getMenuActions()
+                ) {
+                    goToFeed()
+                }
+            }
+        }
     }
 
-    private fun setupViews() {
-        with (activity as? AppCompatActivity) {
-            this?.setSupportActionBar(toolbar)
-            this?.supportActionBar?.setHomeButtonEnabled(true)
-            this?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            toolbar?.title = "Create"
-        }
+    private fun getMenuActions(): List<MenuAction> {
+        return listOf(
+            createOrderAction(),
+            createCustomerAction()
+        )
+    }
 
-        toolbar?.setNavigationOnClickListener {
-            goToFeed()
-        }
-
-        createOrderButton?.setOnClickListener {
+    private fun createOrderAction(): MenuAction {
+        return MenuAction(ACTION_CREATE_ORDER) {
             goToCreateOrder()
         }
+    }
 
-        registerCustomerButton?.setOnClickListener {
+    private fun createCustomerAction(): MenuAction {
+        return MenuAction(ACTION_CREATE_CUSTOMER) {
             goToRegisterCustomer()
         }
     }
@@ -68,5 +66,40 @@ class CreateMenuFragment : Fragment() {
 
     private fun goToRegisterCustomer() {
         findNavController().navigate(R.id.action_createMenuFragment_to_createCustomerFragment)
+    }
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun CreateMenuContent(
+    actions: List<MenuAction>,
+    backButtonAction: () -> Unit
+) {
+    Scaffold(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(),
+        topBar = {
+            NavigationAppBar(
+                title = "Create",
+                onNavigationClick = { backButtonAction() }
+            )
+        }
+    ) {
+        Column {
+            actions.forEach { action ->
+                CreateMenuItem(menuAction = action)
+            }
+        }
+    }
+}
+
+@ExperimentalMaterialApi
+@Preview
+@Composable
+fun CreateMenuPreview() {
+    val sampleAction = MenuAction("Action") { println("ActionClicked") }
+    CreateMenuContent(actions = listOf(sampleAction)) {
+        println("Back button clicked")
     }
 }

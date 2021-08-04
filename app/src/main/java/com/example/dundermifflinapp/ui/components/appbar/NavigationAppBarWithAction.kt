@@ -3,15 +3,17 @@ package com.example.dundermifflinapp.ui.components.appbar
 import androidx.compose.foundation.background
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun NavigationAppBarWithAction(
     title: String,
+    icon: ImageVector,
     onActionClick: () -> Unit,
     onNavigationClick: () -> Unit
 ) {
@@ -20,23 +22,16 @@ fun NavigationAppBarWithAction(
         title = { Text(text = title) },
         actions = {
             IconButton(onClick = { onActionClick() }) {
-                Icon(Icons.Filled.Add, contentDescription = "Create")
+                Icon(icon, contentDescription = "Create")
             }
         },
         backgroundColor = MaterialTheme.colors.background,
         navigationIcon = {
-            MakeBackButtonAction {
+            MakeBackButtonAction(icon = Icons.Filled.ArrowBack) {
                 onNavigationClick()
             }
         }
     )
-}
-
-@Composable
-private fun MakeBackButtonAction(backButtonAction: () -> Unit) {
-    return IconButton(onClick = { backButtonAction() }) {
-        Icon(Icons.Filled.ArrowBack, contentDescription = "Back button")
-    }
 }
 
 @Preview
@@ -44,6 +39,7 @@ private fun MakeBackButtonAction(backButtonAction: () -> Unit) {
 fun NavigationAppBarWithActionPreview() {
     NavigationAppBarWithAction(
         title = "Sample Navbar",
+        icon = Icons.Filled.Create,
         onActionClick = { println("Action Clicked") },
         onNavigationClick = { println("Navigation Clicked") }
     )

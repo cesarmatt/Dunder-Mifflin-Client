@@ -18,18 +18,11 @@ fun NavigationAppBar(
         title = { Text(text = title) },
         backgroundColor = MaterialTheme.colors.background,
         navigationIcon = {
-            MakeBackButtonAction {
+            MakeBackButtonAction(icon = Icons.Filled.ArrowBack) {
                 onNavigationClick()
             }
         }
     )
-}
-
-@Composable
-private fun MakeBackButtonAction(backButtonAction: () -> Unit) {
-    return IconButton(onClick = { backButtonAction() }) {
-        Icon(Icons.Filled.ArrowBack, contentDescription = "Back button")
-    }
 }
 
 @Preview

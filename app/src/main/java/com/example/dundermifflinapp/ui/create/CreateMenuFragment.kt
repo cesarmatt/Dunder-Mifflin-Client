@@ -18,9 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.fragment.findNavController
 import com.example.dundermifflinapp.R
 import com.example.dundermifflinapp.ui.components.appbar.NavigationAppBar
-import com.example.dundermifflinapp.ui.components.appbar.NavigationAppBarWithAction
-import com.example.dundermifflinapp.ui.create.MenuAction.Companion.ACTION_CREATE_CUSTOMER
-import com.example.dundermifflinapp.ui.create.MenuAction.Companion.ACTION_CREATE_ORDER
+import com.example.dundermifflinapp.ui.create.components.CreateMenuItem
 
 class CreateMenuFragment : Fragment() {
 
@@ -31,9 +29,7 @@ class CreateMenuFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                CreateMenuContent(
-                    actions = getMenuActions()
-                ) {
+                CreateMenuContent(actions = getMenuActions()) {
                     goToFeed()
                 }
             }
@@ -48,13 +44,13 @@ class CreateMenuFragment : Fragment() {
     }
 
     private fun createOrderAction(): MenuAction {
-        return MenuAction(ACTION_CREATE_ORDER) {
+        return MenuAction(Action.ACTION_CREATE_ORDER) {
             goToCreateOrder()
         }
     }
 
     private fun createCustomerAction(): MenuAction {
-        return MenuAction(ACTION_CREATE_CUSTOMER) {
+        return MenuAction(Action.ACTION_CREATE_CUSTOMER) {
             goToRegisterCustomer()
         }
     }
@@ -64,7 +60,7 @@ class CreateMenuFragment : Fragment() {
     }
 
     private fun goToCreateOrder() {
-        findNavController().navigate(R.id.action_createMenuFragment_to_selectSalesmanFragment)
+        findNavController().navigate(R.id.action_createMenuFragment_to_createOrderFragment)
     }
 
     private fun goToRegisterCustomer() {
@@ -105,7 +101,7 @@ fun CreateMenuContent(
 @Preview
 @Composable
 fun CreateMenuPreview() {
-    val sampleAction = MenuAction("Action") { println("ActionClicked") }
+    val sampleAction = MenuAction(Action.ACTION_CREATE_CUSTOMER) { println("ActionClicked") }
     CreateMenuContent(actions = listOf(sampleAction)) {
         println("Back button clicked")
     }

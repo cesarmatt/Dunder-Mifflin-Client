@@ -11,11 +11,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.fragment.findNavController
 import com.example.dundermifflinapp.R
+import com.example.dundermifflinapp.data.models.OrderItem
 import com.example.dundermifflinapp.data.models.OrderView
 import com.example.dundermifflinapp.ui.feed.components.OrderItem
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -80,4 +82,3 @@ private fun FeedContent(ordersList: List<OrderView>, onCreateButtonClicked: () -
         }
     }
 }
-

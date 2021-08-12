@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.fragment.findNavController
 import com.example.dundermifflinapp.R
 import com.example.dundermifflinapp.ui.components.appbar.NavigationAppBar
-import com.example.dundermifflinapp.ui.create.components.CreateMenuItem
+import com.example.dundermifflinapp.ui.create.components.menuitem.CreateMenuItem
 
 class CreateMenuFragment : Fragment() {
 

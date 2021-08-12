@@ -25,8 +25,7 @@ class CreateOrderViewModel(private val createOrderRepository: CreateOrderReposit
         get() = _customers
 
     private val _salesman = MutableLiveData<List<Salesman>>()
-    val salesman: LiveData<List<Salesman>>
-        get() = _salesman
+    val salesman: LiveData<List<Salesman>> = _salesman
 
     private val _items = MutableLiveData<List<OrderItem>>()
     val items: LiveData<List<OrderItem>>
@@ -34,7 +33,7 @@ class CreateOrderViewModel(private val createOrderRepository: CreateOrderReposit
 
     val selectedSalesman = MutableLiveData<Salesman>()
     val selectedCustomer = MutableLiveData<Customer>()
-    val selectedItems = MutableLiveData<List<OrderItem>>()
+    val selectedItems = MutableLiveData<MutableList<OrderItem>>()
 
     init {
         loadInternalData()
@@ -70,8 +69,8 @@ class CreateOrderViewModel(private val createOrderRepository: CreateOrderReposit
         selectedCustomer.value = customer
     }
 
-    fun onItemsSelected(selectedItems: List<OrderItem>) {
-        this.selectedItems.value = selectedItems
+    fun onItemSelected(selectedItem: OrderItem) {
+        selectedItems.value?.add(selectedItem)
     }
 
     private fun loadInternalData() {

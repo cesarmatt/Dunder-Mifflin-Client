@@ -1,4 +1,4 @@
-package com.example.dundermifflinapp.ui.create.components
+package com.example.dundermifflinapp.ui.create.components.menuitem
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

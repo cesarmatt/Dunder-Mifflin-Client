@@ -17,38 +17,34 @@ import kotlinx.coroutines.launch
 class CreateOrderViewModel(private val createOrderRepository: CreateOrderRepository) : ViewModel() {
 
     private val _uiState = MutableLiveData<UIState>()
-    val uiState: LiveData<UIState>
-        get() = _uiState
+    val uiState: LiveData<UIState> = _uiState
+
+    private val _formState: CreateOrderFormState = CreateOrderFormState()
+//    val formState: LiveData<CreateOrderFormState> = _formState
 
     private val _customers = MutableLiveData<List<Customer>>()
-    val customers: LiveData<List<Customer>>
-        get() = _customers
+    val customers: LiveData<List<Customer>> = _customers
 
     private val _salesman = MutableLiveData<List<Salesman>>()
     val salesman: LiveData<List<Salesman>> = _salesman
 
     private val _items = MutableLiveData<List<OrderItem>>()
-    val items: LiveData<List<OrderItem>>
-        get() = _items
-
-    val selectedSalesman = MutableLiveData<Salesman>()
-    val selectedCustomer = MutableLiveData<Customer>()
-    val selectedItems = MutableLiveData<MutableList<OrderItem>>()
+    val items: LiveData<List<OrderItem>> = _items
 
     init {
         loadInternalData()
     }
 
-    fun saveOrder(customerId: String, salesmanId: String, items: List<OrderItem>, value: Float) {
+    fun saveOrder() {
         emitUiState(loading = true)
 
-        val itemsIds: List<String> = items.map { it.orderItemId }
+        val itemsIds: List<String> = getItemsId()
 
         val order = Order(
-            customerId = customerId,
-            salesmanId = salesmanId,
+            customerId = _formState.selectedCustomer?.customerId,
+            salesmanId = _formState.selectedSalesman?.id,
             items = itemsIds,
-            value = value
+            value = _formState.totalValue
         )
 
         viewModelScope.launch {
@@ -62,15 +58,28 @@ class CreateOrderViewModel(private val createOrderRepository: CreateOrderReposit
     }
 
     fun onSalesmanSelected(salesman: Salesman) {
-        selectedSalesman.value = salesman
+        _formState.selectedSalesman = salesman
     }
 
     fun onCustomerSelected(customer: Customer) {
-        selectedCustomer.value = customer
+        _formState.selectedCustomer = customer
     }
 
     fun onItemSelected(selectedItem: OrderItem) {
-        selectedItems.value?.add(selectedItem)
+        _formState.selectedItems.add(selectedItem)
+    }
+
+    fun onItemDeselected(selectedItem: OrderItem) {
+        _formState.selectedItems.remove(selectedItem)
+        updateOrderValue(_formState.selectedItems)
+    }
+
+    private fun updateOrderValue(selectedItems: MutableList<OrderItem>?) {
+        var total = 0f
+        selectedItems?.forEach { item ->
+            total += item.value ?: 0f
+        }
+        _formState.totalValue = total
     }
 
     private fun loadInternalData() {
@@ -118,10 +127,21 @@ class CreateOrderViewModel(private val createOrderRepository: CreateOrderReposit
     ) {
         _uiState.value = UIState(loading, error, succeed)
     }
+
+    private fun getItemsId(): List<String> {
+        return _formState.selectedItems.map { it.orderItemId } ?: listOf()
+    }
 }
 
 class UIState(
     val loading: Boolean,
     val error: Event<Int>?,
     val succeed: Event<Int>?
+)
+
+class CreateOrderFormState(
+    var selectedSalesman: Salesman? = null,
+    var selectedCustomer: Customer? = null,
+    var selectedItems: MutableList<OrderItem> = mutableListOf(),
+    var totalValue: Float = 0f
 )

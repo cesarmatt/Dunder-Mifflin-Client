@@ -24,7 +24,8 @@ import com.example.dundermifflinapp.data.models.Salesman
 import com.example.dundermifflinapp.ui.components.appbar.NavigationAppBarWithAction
 import com.example.dundermifflinapp.ui.create.components.dropdown.DropDownOption
 import com.example.dundermifflinapp.ui.create.order.components.customerdropdown.CustomerDropDownComponent
-import com.example.dundermifflinapp.ui.create.order.components.itemsdropdown.ItemDropDownComponent
+import com.example.dundermifflinapp.ui.create.order.components.itemselector.ItemCheckboxState
+import com.example.dundermifflinapp.ui.create.order.components.itemselector.ItemSelectorComponent
 import com.example.dundermifflinapp.ui.create.order.components.salesmandropdown.SalesmanDropDownComponent
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -52,7 +53,7 @@ class CreateOrderFragment : Fragment() {
     }
 
     private fun onCreateButtonClicked() {
-        println("Create!")
+        viewModel.saveOrder()
     }
 }
 
@@ -80,8 +81,8 @@ fun CreateOrderScreen(
 
     val itemsList = createOrderViewModel.items.observeAsState(initial = listOf())
     val items = itemsList.value.map {
-        DropDownOption(
-            label = it.name ?: "",
+        ItemCheckboxState(
+            isChecked = false,
             content = it
         )
     }
@@ -89,12 +90,13 @@ fun CreateOrderScreen(
     CreateOrderContent(
         salesmanDropDownOptions = salesman,
         customerDropDownOptions = customers,
-        itemsDropDownOptions = items,
+        items = items,
         onCreateButtonClicked = onCreateButtonClicked,
         onNavigationButtonClicked = onNavigationButtonClicked,
         onSalesmanSelected = { createOrderViewModel.onSalesmanSelected(it) },
         onCustomerSelected = { createOrderViewModel.onCustomerSelected(it) },
-        onItemSelected = { createOrderViewModel.onItemSelected(it) }
+        onItemSelected = { createOrderViewModel.onItemSelected(it) },
+        onItemDeselected = { createOrderViewModel.onItemDeselected(it) }
     )
 }
 
@@ -102,12 +104,13 @@ fun CreateOrderScreen(
 fun CreateOrderContent(
     salesmanDropDownOptions: List<DropDownOption>,
     customerDropDownOptions: List<DropDownOption>,
-    itemsDropDownOptions: List<DropDownOption>,
+    items: List<ItemCheckboxState>,
     onCreateButtonClicked: () -> Unit,
     onNavigationButtonClicked: () -> Unit,
     onSalesmanSelected: (Salesman) -> Unit,
     onCustomerSelected: (Customer) -> Unit,
     onItemSelected: (OrderItem) -> Unit,
+    onItemDeselected: (OrderItem) -> Unit,
 ) {
     Scaffold(
         modifier = Modifier
@@ -131,9 +134,10 @@ fun CreateOrderContent(
                 dropDownOptions = customerDropDownOptions,
                 onCustomerSelected = onCustomerSelected
             )
-            ItemDropDownComponent(
-                dropDownOptions = itemsDropDownOptions,
-                onItemSelected = onItemSelected
+            ItemSelectorComponent(
+                items = items,
+                onItemSelected = onItemSelected,
+                onItemDeselected = onItemDeselected
             )
         }
     }

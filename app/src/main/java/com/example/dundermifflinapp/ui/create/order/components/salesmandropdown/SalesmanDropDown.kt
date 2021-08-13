@@ -50,11 +50,14 @@ private fun SalesmanDropDown(
 ) {
     Box {
         Column {
+            Text(
+                "Select a salesman",
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = selectedValue.value,
-                onValueChange = { selectedValue.value = it },
-                label = { Text("Salesman") },
+                onValueChange = { selectedValue.value = it }
             )
             DropDown(
                 isExpanded = isExpanded.value,

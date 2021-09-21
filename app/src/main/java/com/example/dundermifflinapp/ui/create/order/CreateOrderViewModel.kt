@@ -19,9 +19,6 @@ class CreateOrderViewModel(private val createOrderRepository: CreateOrderReposit
     private val _uiState = MutableLiveData<UIState>()
     val uiState: LiveData<UIState> = _uiState
 
-    private val _formState: CreateOrderFormState = CreateOrderFormState()
-//    val formState: LiveData<CreateOrderFormState> = _formState
-
     private val _customers = MutableLiveData<List<Customer>>()
     val customers: LiveData<List<Customer>> = _customers
 
@@ -31,8 +28,18 @@ class CreateOrderViewModel(private val createOrderRepository: CreateOrderReposit
     private val _items = MutableLiveData<List<OrderItem>>()
     val items: LiveData<List<OrderItem>> = _items
 
+    val formState = CreateOrderFormState()
+
     init {
         loadInternalData()
+    }
+
+    private fun loadInternalData() {
+        viewModelScope.launch {
+            loadCustomers()
+            loadSalesman()
+            loadItems()
+        }
     }
 
     fun saveOrder() {
@@ -41,10 +48,10 @@ class CreateOrderViewModel(private val createOrderRepository: CreateOrderReposit
         val itemsIds: List<String> = getItemsId()
 
         val order = Order(
-            customerId = _formState.selectedCustomer?.customerId,
-            salesmanId = _formState.selectedSalesman?.id,
+            customerId = formState.selectedCustomer.value?.customerId,
+            salesmanId = formState.selectedSalesman.value?.id,
             items = itemsIds,
-            value = _formState.totalValue
+            value = formState.totalValue.value
         )
 
         viewModelScope.launch {
@@ -58,36 +65,31 @@ class CreateOrderViewModel(private val createOrderRepository: CreateOrderReposit
     }
 
     fun onSalesmanSelected(salesman: Salesman) {
-        _formState.selectedSalesman = salesman
+        formState.selectedSalesman.value = salesman
     }
 
     fun onCustomerSelected(customer: Customer) {
-        _formState.selectedCustomer = customer
+        formState.selectedCustomer.value = customer
     }
 
     fun onItemSelected(selectedItem: OrderItem) {
-        _formState.selectedItems.add(selectedItem)
+        val listState = formState.selectedItems.value ?: mutableListOf()
+        listState.add(selectedItem)
+        formState.selectedItems.value = listState
+        updateOrderValue(formState.selectedItems.value ?: mutableListOf())
     }
 
     fun onItemDeselected(selectedItem: OrderItem) {
-        _formState.selectedItems.remove(selectedItem)
-        updateOrderValue(_formState.selectedItems)
+        formState.selectedItems.value?.remove(selectedItem)
+        updateOrderValue(formState.selectedItems.value ?: mutableListOf())
     }
 
-    private fun updateOrderValue(selectedItems: MutableList<OrderItem>?) {
+    private fun updateOrderValue(selectedItems: MutableList<OrderItem>) {
         var total = 0f
-        selectedItems?.forEach { item ->
+        selectedItems.forEach { item ->
             total += item.value ?: 0f
         }
-        _formState.totalValue = total
-    }
-
-    private fun loadInternalData() {
-        viewModelScope.launch {
-            loadCustomers()
-            loadSalesman()
-            loadItems()
-        }
+        formState.totalValue.value = total
     }
 
     private suspend fun loadCustomers() {
@@ -96,7 +98,10 @@ class CreateOrderViewModel(private val createOrderRepository: CreateOrderReposit
         if (response is Result.Success) {
             _customers.value = response.data
         } else {
-            emitUiState(loading = false, error = Event(R.string.msg_error_getting_customers))
+            emitUiState(
+                loading = false,
+                error = Event(R.string.msg_error_getting_customers)
+            )
         }
     }
 
@@ -106,7 +111,10 @@ class CreateOrderViewModel(private val createOrderRepository: CreateOrderReposit
         if (response is Result.Success) {
             _salesman.value = response.data
         } else {
-            emitUiState(loading = false, error = Event(R.string.msg_error_getting_salesman))
+            emitUiState(
+                loading = false,
+                error = Event(R.string.msg_error_getting_salesman)
+            )
         }
     }
 
@@ -116,7 +124,10 @@ class CreateOrderViewModel(private val createOrderRepository: CreateOrderReposit
         if (response is Result.Success) {
             _items.value = response.data
         } else {
-            emitUiState(loading = false, error = Event(R.string.msg_error_getting_items))
+            emitUiState(
+                loading = false,
+                error = Event(R.string.msg_error_getting_items)
+            )
         }
     }
 
@@ -129,7 +140,7 @@ class CreateOrderViewModel(private val createOrderRepository: CreateOrderReposit
     }
 
     private fun getItemsId(): List<String> {
-        return _formState.selectedItems.map { it.orderItemId } ?: listOf()
+        return formState.selectedItems.value?.map { it.orderItemId } ?: listOf()
     }
 }
 
@@ -137,11 +148,4 @@ class UIState(
     val loading: Boolean,
     val error: Event<Int>?,
     val succeed: Event<Int>?
-)
-
-class CreateOrderFormState(
-    var selectedSalesman: Salesman? = null,
-    var selectedCustomer: Customer? = null,
-    var selectedItems: MutableList<OrderItem> = mutableListOf(),
-    var totalValue: Float = 0f
 )

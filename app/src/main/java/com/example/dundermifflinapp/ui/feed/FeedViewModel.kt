@@ -24,7 +24,7 @@ class FeedViewModel(private val repository: FeedRepository) : ViewModel() {
         loadInternalData()
     }
 
-    private fun getOrders() {
+    fun getOrders() {
         viewModelScope.launch {
             val response = repository.getOrders()
             if (response is Result.Success) {

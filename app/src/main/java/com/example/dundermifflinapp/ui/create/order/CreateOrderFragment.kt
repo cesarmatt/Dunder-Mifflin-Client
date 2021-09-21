@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.fragment.findNavController
@@ -26,6 +27,7 @@ import com.example.dundermifflinapp.ui.create.components.dropdown.DropDownOption
 import com.example.dundermifflinapp.ui.create.order.components.customerdropdown.CustomerDropDownComponent
 import com.example.dundermifflinapp.ui.create.order.components.itemselector.ItemCheckboxState
 import com.example.dundermifflinapp.ui.create.order.components.itemselector.ItemSelectorComponent
+import com.example.dundermifflinapp.ui.create.order.components.ordervaluebanner.OrderValueBannerComponent
 import com.example.dundermifflinapp.ui.create.order.components.salesmandropdown.SalesmanDropDownComponent
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -34,7 +36,8 @@ class CreateOrderFragment : Fragment() {
     private val viewModel: CreateOrderViewModel by viewModel()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
@@ -87,6 +90,8 @@ fun CreateOrderScreen(
         )
     }
 
+    val orderValue = createOrderViewModel.formState.totalValue?.observeAsState(initial = 0f)
+
     CreateOrderContent(
         salesmanDropDownOptions = salesman,
         customerDropDownOptions = customers,
@@ -96,7 +101,8 @@ fun CreateOrderScreen(
         onSalesmanSelected = { createOrderViewModel.onSalesmanSelected(it) },
         onCustomerSelected = { createOrderViewModel.onCustomerSelected(it) },
         onItemSelected = { createOrderViewModel.onItemSelected(it) },
-        onItemDeselected = { createOrderViewModel.onItemDeselected(it) }
+        onItemDeselected = { createOrderViewModel.onItemDeselected(it) },
+        orderValue = orderValue?.value ?: 0f
     )
 }
 
@@ -111,6 +117,7 @@ fun CreateOrderContent(
     onCustomerSelected: (Customer) -> Unit,
     onItemSelected: (OrderItem) -> Unit,
     onItemDeselected: (OrderItem) -> Unit,
+    orderValue: Float
 ) {
     Scaffold(
         modifier = Modifier
@@ -125,20 +132,40 @@ fun CreateOrderContent(
             )
         }
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            SalesmanDropDownComponent(
-                dropDownOptions = salesmanDropDownOptions,
-                onSalesmanSelected = onSalesmanSelected
-            )
-            CustomerDropDownComponent(
-                dropDownOptions = customerDropDownOptions,
-                onCustomerSelected = onCustomerSelected
-            )
-            ItemSelectorComponent(
-                items = items,
-                onItemSelected = onItemSelected,
-                onItemDeselected = onItemDeselected
-            )
+        Column {
+            Column(modifier = Modifier.padding(8.dp).weight(1f)) {
+                SalesmanDropDownComponent(
+                    dropDownOptions = salesmanDropDownOptions,
+                    onSalesmanSelected = onSalesmanSelected
+                )
+                CustomerDropDownComponent(
+                    dropDownOptions = customerDropDownOptions,
+                    onCustomerSelected = onCustomerSelected
+                )
+                ItemSelectorComponent(
+                    items = items,
+                    onItemSelected = onItemSelected,
+                    onItemDeselected = onItemDeselected
+                )
+            }
+            OrderValueBannerComponent(orderValue = orderValue)
         }
     }
+}
+
+@Preview
+@Composable
+fun CreateOrderContentPreview() {
+    CreateOrderContent(
+        salesmanDropDownOptions = listOf(),
+        customerDropDownOptions = listOf(),
+        items = listOf(),
+        onCreateButtonClicked = { println("Callback!") },
+        onNavigationButtonClicked = { println("Callback!") },
+        onSalesmanSelected = { println("Callback!") },
+        onCustomerSelected = { println("Callback!") },
+        onItemSelected = { println("Callback!") },
+        onItemDeselected = { println("Callback!") },
+        orderValue = 100f
+    )
 }

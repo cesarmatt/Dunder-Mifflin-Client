@@ -17,23 +17,44 @@ class CreateCustomerViewModel(private val createCustomerRepository: CreateCustom
     val uiState: LiveData<UIState>
         get() = _uiState
 
-    fun saveCustomer(customerName: String, customerAddress: String, customerEmail: String) {
+    val formState = CreateCustomerFormState()
+
+    fun saveCustomer() {
         emitUiState(loading = true)
         val customer = Customer(
-            customerId = "",
-            name = customerName,
-            address = customerAddress,
-            email = customerEmail
+            name = formState.name.value,
+            address = formState.address.value,
+            email = formState.email.value
         )
+
+        println(customer)
 
         viewModelScope.launch {
             val result = createCustomerRepository.saveCustomer(customer)
             if (result is Result.Success) {
-                emitUiState(loading = false, succeed = Event(R.string.msg_created_customer))
+                emitUiState(
+                    loading = false,
+                    succeed = Event(R.string.msg_created_customer)
+                )
             } else {
-                emitUiState(loading = false, error = Event(R.string.msg_error_creating_customer))
+                emitUiState(
+                    loading = false,
+                    error = Event(R.string.msg_error_creating_customer)
+                )
             }
         }
+    }
+
+    fun onNameChanged(name: String) {
+        formState.name.value = name
+    }
+
+    fun onAddressChanged(address: String) {
+        formState.address.value = address
+    }
+
+    fun onEmailChanged(email: String) {
+        formState.email.value = email
     }
 
     private fun emitUiState(
